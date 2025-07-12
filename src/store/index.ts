@@ -1,19 +1,53 @@
-// src/store/index.ts
+// src/types/index.ts
 
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { thunk } from 'redux-thunk';
-import productsReducer from './reducer';
-import type { RootState } from '../types';
+export interface Product {
+    id: string;
+    title: string;
+    image: string;
+    description: string;
+    price: number;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+    _id?: string;
+}
 
-// Root Reducer
-const rootReducer = combineReducers({
-    products: productsReducer,
-});
+export interface ProductFormData {
+    title: string;
+    image: string;
+    description: string;
+    price: number | string;
+}
 
-// Create Store with middleware
-const store = createStore(rootReducer, applyMiddleware(thunk));
+export interface Toast {
+    type: 'success' | 'error';
+    message: string;
+}
 
-export type AppDispatch = typeof store.dispatch;
-export type AppRootState = RootState;
+export interface User {
+    _id: string;
+    name: string;
+    email: string;
+    fullName?: string;
+}
 
-export default store;
+export interface AuthContextType {
+    user: User | null;
+    isAuthenticated: boolean;
+    login: (email: string, password: string) => Promise<boolean>;
+    logout: () => void;
+    makeAuthenticatedRequest: (url: string, options?: RequestInit) => Promise<Response>;
+}
+
+export interface RegistrationFormData {
+    fullName: string;
+    email: string;
+    phone: string;
+    password: string;
+    confirmPassword: string;
+}
+
+export interface LoginFormData {
+    email: string;
+    password: string;
+}
