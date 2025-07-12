@@ -27,15 +27,6 @@ interface Toast {
     message: string;
 }
 
-// Environment-based API URL configuration
-const getApiBaseUrl = (): string => {
-    if (import.meta.env.PROD) {
-        return import.meta.env.VITE_API_URL || 'https://your-backend-app.onrender.com/api';
-    } else {
-        return import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-    }
-};
-
 const productSchema = Yup.object().shape({
     title: Yup.string().required('Title is required').min(2, 'Title must be at least 2 characters'),
     image: Yup.string().url('Must be a valid URL').required('Image URL is required'),
