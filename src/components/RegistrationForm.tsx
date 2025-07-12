@@ -132,9 +132,9 @@ const InputField: React.FC<InputFieldProps> = ({ name, type, placeholder, icon: 
     return (
         <div className="space-y-2">
             <label htmlFor={name} className="block text-sm font-medium text-gray-700 capitalize">
-                {name === 'fullName' ? 'Full Name' : 
-                 name === 'confirmPassword' ? 'Confirm Password' : 
-                 name}
+                {name === 'fullName' ? 'Full Name' :
+                    name === 'confirmPassword' ? 'Confirm Password' :
+                        name}
             </label>
             <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -187,7 +187,7 @@ const RegistrationForm: React.FC = () => {
     ): Promise<void> => {
         setIsSubmitting(true);
         console.log('📝 Submitting registration:', { ...values, password: '***', confirmPassword: '***' });
-        
+
         try {
             const response = await fetch(`${API_BASE_URL}/register`, {
                 method: 'POST',
@@ -202,7 +202,6 @@ const RegistrationForm: React.FC = () => {
             console.log('📋 Registration response data:', data);
 
             if (response.ok) {
-                const successData = data as ApiResponse;
                 showToast('success', 'Registration Successful!', 'Your account has been created successfully. You can now sign in!');
                 resetForm();
             } else {

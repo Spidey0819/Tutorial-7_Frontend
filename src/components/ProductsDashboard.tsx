@@ -27,6 +27,15 @@ interface Toast {
     message: string;
 }
 
+// Environment-based API URL configuration
+const getApiBaseUrl = (): string => {
+    if (import.meta.env.PROD) {
+        return import.meta.env.VITE_API_URL || 'https://your-backend-app.onrender.com/api';
+    } else {
+        return import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+    }
+};
+
 const productSchema = Yup.object().shape({
     title: Yup.string().required('Title is required').min(2, 'Title must be at least 2 characters'),
     image: Yup.string().url('Must be a valid URL').required('Image URL is required'),
@@ -97,8 +106,8 @@ const ProductModal: React.FC<{
                     <h2 className="text-2xl font-bold text-gray-800">
                         {product ? 'Edit Product' : 'Add New Product'}
                     </h2>
-                    <button 
-                        onClick={onClose} 
+                    <button
+                        onClick={onClose}
                         className="text-gray-400 hover:text-gray-600"
                         disabled={isSubmitting}
                     >
@@ -141,9 +150,9 @@ const ProductModal: React.FC<{
                                 <ErrorMessage name="image" component="div" className="text-red-500 text-sm mt-1" />
                                 {values.image && (
                                     <div className="mt-2">
-                                        <img 
-                                            src={values.image} 
-                                            alt="Preview" 
+                                        <img
+                                            src={values.image}
+                                            alt="Preview"
                                             className="w-full h-32 object-cover rounded"
                                             onError={(e) => {
                                                 (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x200?text=Invalid+Image';
@@ -306,8 +315,6 @@ const ProductsDashboard: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const API_BASE_URL = 'http://localhost:5001/api';
-
     const showToast = (type: 'success' | 'error', message: string) => {
         setToast({ type, message });
     };
@@ -319,12 +326,12 @@ const ProductsDashboard: React.FC = () => {
     // Fetch products
     const fetchProducts = async () => {
         if (!isAuthenticated) return;
-        
+
         setLoading(true);
         try {
-            const response = await makeAuthenticatedRequest(`${API_BASE_URL}/products`);
+            const response = await makeAuthenticatedRequest('/products');
             const data = await response.json();
-            
+
             if (response.ok) {
                 setProducts(data.products || []);
             } else {
@@ -342,12 +349,12 @@ const ProductsDashboard: React.FC = () => {
     const handleCreateProduct = async (values: ProductFormData) => {
         setIsSubmitting(true);
         try {
-            const response = await makeAuthenticatedRequest(`${API_BASE_URL}/products`, {
+            const response = await makeAuthenticatedRequest('/products', {
                 method: 'POST',
                 body: JSON.stringify(values),
             });
             const data = await response.json();
-            
+
             if (response.ok) {
                 setProducts(prev => [...prev, data.product]);
                 showToast('success', 'Product created successfully!');
@@ -366,15 +373,15 @@ const ProductsDashboard: React.FC = () => {
     // Update product
     const handleEditProduct = async (values: ProductFormData) => {
         if (!editingProduct) return;
-        
+
         setIsSubmitting(true);
         try {
-            const response = await makeAuthenticatedRequest(`${API_BASE_URL}/products/${editingProduct.id}`, {
+            const response = await makeAuthenticatedRequest(`/products/${editingProduct.id}`, {
                 method: 'PUT',
                 body: JSON.stringify(values),
             });
             const data = await response.json();
-            
+
             if (response.ok) {
                 setProducts(prev => prev.map(p => p.id === editingProduct.id ? data.product : p));
                 showToast('success', 'Product updated successfully!');
@@ -394,13 +401,13 @@ const ProductsDashboard: React.FC = () => {
     // Delete product
     const handleDeleteProduct = async (productId: string) => {
         if (!window.confirm('Are you sure you want to delete this product?')) return;
-        
+
         try {
-            const response = await makeAuthenticatedRequest(`${API_BASE_URL}/products/${productId}`, {
+            const response = await makeAuthenticatedRequest(`/products/${productId}`, {
                 method: 'DELETE',
             });
             const data = await response.json();
-            
+
             if (response.ok) {
                 setProducts(prev => prev.filter(p => p.id !== productId));
                 showToast('success', 'Product deleted successfully!');
@@ -463,7 +470,7 @@ const ProductsDashboard: React.FC = () => {
                                 <span>Products Dashboard</span>
                             </h1>
                             <p className="text-gray-600 mt-1">
-                                Welcome back, <span className="font-medium">{user?.name}</span>! 
+                                Welcome back, <span className="font-medium">{user?.name}</span>!
                                 Manage your products here.
                             </p>
                         </div>
@@ -527,7 +534,7 @@ const ProductsDashboard: React.FC = () => {
                                     {searchTerm ? 'No products found' : 'No products yet'}
                                 </h3>
                                 <p className="text-gray-500 mb-6">
-                                    {searchTerm 
+                                    {searchTerm
                                         ? 'Try adjusting your search terms'
                                         : 'Get started by adding your first product!'
                                     }
@@ -543,7 +550,7 @@ const ProductsDashboard: React.FC = () => {
                                 )}
                             </div>
                         ) : (
-                            <div className={viewMode === 'grid' 
+                            <div className={viewMode === 'grid'
                                 ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
                                 : 'space-y-4'
                             }>

@@ -1,18 +1,16 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import store from './store';
 import { AuthProvider } from './contexts/AuthContext';
 import Navigation from './components/Navigation';
 import RegistrationForm from './components/RegistrationForm';
-import ProductsDashboard from './components/ProductsDashboard'; // Updated import
+import ProductsDashboard from './components/ProductsDashboard';
 import Home from './components/Home';
 import Contact from './components/Contact';
-import LoginForm from './components/LoginForm'; 
+import LoginForm from './components/LoginForm';
 import './App.css';
 
 const App: React.FC = () => {
     const [currentPage, setCurrentPage] = React.useState('home');
-    
+
     const handlePageChange = (page: string) => {
         console.log('App: Page changing from', currentPage, 'to', page);
         setCurrentPage(page);
@@ -24,7 +22,7 @@ const App: React.FC = () => {
             case 'home':
                 return <Home />;
             case 'products':
-                return <ProductsDashboard />; // Updated to use new dashboard
+                return <ProductsDashboard />;
             case 'contact':
                 return <Contact />;
             case 'register':
@@ -37,14 +35,12 @@ const App: React.FC = () => {
     };
 
     return (
-        <Provider store={store}>
-            <AuthProvider>
-                <div className="App">
-                    <Navigation currentPage={currentPage} onPageChange={handlePageChange} />
-                    <main>{renderPage()}</main>
-                </div>
-            </AuthProvider>
-        </Provider>
+        <AuthProvider>
+            <div className="App">
+                <Navigation currentPage={currentPage} onPageChange={handlePageChange} />
+                <main>{renderPage()}</main>
+            </div>
+        </AuthProvider>
     );
 };
 

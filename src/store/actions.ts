@@ -49,7 +49,7 @@ const getAuthHeaders = (): HeadersInit => {
 // Helper function to make authenticated requests
 const makeAuthenticatedRequest = async (url: string, options: RequestInit = {}): Promise<Response> => {
     const fullUrl = url.startsWith('http') ? url : `${API_BASE_URL}${url.startsWith('/') ? url : `/${url}`}`;
-    
+
     const headers = {
         ...getAuthHeaders(),
         ...options.headers,
@@ -151,7 +151,7 @@ export const fetchProducts = (page = 1, limit = 10, sort = '-createdAt', keyword
 
             const response = await makeAuthenticatedRequest(`/products?${queryParams}`);
             const data = await response.json();
-            
+
             if (response.ok) {
                 // Handle both pagination response and simple array response
                 const products = data.products || data;
@@ -175,7 +175,7 @@ export const createProduct = (productData: ProductFormData) => {
                 body: JSON.stringify(productData),
             });
             const data = await response.json();
-            
+
             if (response.ok) {
                 dispatch(createProductSuccess(data.product));
             } else {
@@ -197,7 +197,7 @@ export const updateProduct = (productId: string, productData: Partial<ProductFor
                 body: JSON.stringify(productData),
             });
             const data = await response.json();
-            
+
             if (response.ok) {
                 dispatch(updateProductSuccess(data.product));
             } else {
@@ -218,7 +218,7 @@ export const deleteProduct = (productId: string) => {
                 method: 'DELETE',
             });
             const data = await response.json();
-            
+
             if (response.ok) {
                 dispatch(deleteProductSuccess(productId));
             } else {
@@ -233,11 +233,11 @@ export const deleteProduct = (productId: string) => {
 
 // Additional action for getting a single product
 export const getProduct = (productId: string) => {
-    return async (dispatch: Dispatch<ProductActionTypes>) => {
+    return async () => {
         try {
             const response = await makeAuthenticatedRequest(`/products/${productId}`);
             const data = await response.json();
-            
+
             if (response.ok) {
                 return data.product;
             } else {

@@ -17,12 +17,6 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChange }) =>
         onPageChange('home');
     };
 
-    // Base navigation items available to everyone
-    const baseNavItems = [
-        { key: 'home', label: 'Home', icon: Home },
-        { key: 'contact', label: 'Contact', icon: Phone },
-    ];
-
     // Authenticated user navigation items
     const authenticatedNavItems = [
         { key: 'home', label: 'Home', icon: Home },
@@ -79,7 +73,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChange }) =>
                                         Welcome, <span className="font-medium">{user?.name}</span>
                                     </span>
                                 </div>
-                                
+
                                 {/* Sign Out Button */}
                                 <button
                                     onClick={handleLogout}
@@ -137,7 +131,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChange }) =>
                                 <span>{label}</span>
                             </button>
                         ))}
-                        
+
                         {/* Mobile Auth Section */}
                         {isAuthenticated ? (
                             <>

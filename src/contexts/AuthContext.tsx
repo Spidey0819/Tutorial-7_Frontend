@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
 
 interface User {
     _id: string;
@@ -37,16 +38,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    
+
     const API_BASE_URL = getApiBaseUrl();
 
     useEffect(() => {
         console.log('🔗 API Base URL:', API_BASE_URL);
-        
+
         // Check for existing token on app load
         const savedToken = localStorage.getItem('jwt_token');
         const savedUser = localStorage.getItem('user');
-        
+
         if (savedToken && savedUser) {
             try {
                 setToken(savedToken);
@@ -66,7 +67,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
             console.log('🔐 Attempting login with:', { email, password: '***' });
             console.log('📡 Login URL:', `${API_BASE_URL}/auth/login`);
-            
+
             const response = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
                 headers: {
@@ -83,7 +84,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 // Handle different possible response structures
                 const token = data.token || data.accessToken || data.jwt;
                 const userInfo = data.user || data.data || data;
-                
+
                 if (token && userInfo) {
                     const userData = {
                         _id: userInfo._id || userInfo.id,
@@ -93,7 +94,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                     };
 
                     console.log('✅ Setting user data:', userData);
-                    
+
                     setToken(token);
                     setUser(userData);
                     setIsAuthenticated(true);
@@ -129,12 +130,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const makeAuthenticatedRequest = async (url: string, options: RequestInit = {}): Promise<Response> => {
         // Convert relative URLs to absolute URLs
         const fullUrl = url.startsWith('http') ? url : `${API_BASE_URL}${url.startsWith('/') ? url.slice(4) : `/${url}`}`;
-        
+
         console.log('🌐 Making authenticated request to:', fullUrl);
-        
-        const headers = {
+
+        const headers: Record<string, string> = {
             'Content-Type': 'application/json',
-            ...options.headers,
+            ...options.headers as Record<string, string>,
         };
 
         if (token) {
